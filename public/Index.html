@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+      <title>ApiRest</title>
+      <!-- Required Stylesheets -->
+      <link
+         type="text/css"
+         rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+         />
+      <link
+         type="text/css"
+         rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+         />
+      <!-- Load polyfills to support older browsers -->
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"></script>
+      <!-- Required scripts -->
+      <script src="https://unpkg.com/vue@latest/dist/vue.js"></script>
+      <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   </head>
+   <body>
+      <!-- Our application root element -->
+      <div id="app">
+     
+<br><br><br>
+   <b-card no-body class="text-center">
+    <div class="bg-dark text-light">
+      <h2>Buscar un dominio</h2>
+    </div>
+  </b-card>
+     <br><br>   
+         <b-container class="bv-example-row">
+            <b-row>
+               <b-col cols="6">
+                   <b-alert v-model="showDismissibleAlert" variant="danger" dismissible>
+                   El dominio esta vacio o esta escrito de forma invalida. Forma valida: example.com </b-alert>
+                   <b-form-group
+      id="fieldset-1"
+      description="un dominio del tipo: ejemplo.com"
+      label="Escribir el dominio :"
+      label-for="input-1">
+      <b-form-input id="domain" placeholder="example.com"></b-form-input>
+    </b-form-group>
+    <b-col lg="4" class="pb-2"><b-button size="lg" variant="dark" @click="search">Consultar</b-button></b-col>
+               </b-col>
+               <b-col cols="6">
+                  <b-form-textarea
+                     id="textarea"
+                     label="Resultado de la consulta"
+                     v-model="text"
+                     rows="6"
+                     max-rows="12"
+                     ></b-form-textarea>
+               </b-col>
+            </b-row>
+         </b-container>
+         <br><br>
+        <b-card no-body class="text-center">
+    <div class="bg-dark text-light">
+      <h2>Tabla de servidores</h2>
+    </div>
+  </b-card>
+  <br><br>
+         <b-container>
+            <b-table
+               :bordered= "true"
+               :hover="true"
+               :fixed="true"
+               :items="items"
+               :dark=true></b-table>
+         </b-container>
+      </div>
+      </div>
+      </div>
+      </div>
+      <!-- Start running your app -->
+      <script>
+         var apiURL = 'http://localhost:8081/servers'
+         
+         window.app = new Vue({
+           el: '#app',
+           data: {
+               items: [],
+               text : "Resultados...",
+               showDismissibleAlert: false,
+           },
+         
+           mounted() {
+             axios.get(apiURL).then(response => {
+               this.items = response.data.items
+             })
+         },
+           methods: {
+               search: function () {
+                 console.log("Prueba boton")
+
+                 var str = "http://localhost:8081/infoservers/"
+                 var input = document.getElementById("domain").value
+                 input = input.toLowerCase()
+         
+                 
+                 if (input=="" || input.includes('.com')==false ) {
+                    this.showDismissibleAlert=true
+                } else {
+                   this.showDismissibleAlert=false
+                 var url =  str + input
+                 axios.get(url).then(response => {
+                   this.text = response.data
+                 })
+
+                }
+
+
+               }
+           }
+         })
+         
+      </script>
+   </body>
+</html>
